@@ -69,3 +69,4 @@ END {
 }
 
 #Throughput = received_data*8/DataTransmissionPeriod
+#java -jar NSG2.1.jar
