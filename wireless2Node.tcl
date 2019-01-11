@@ -104,11 +104,98 @@ $ns_ run
 
 
 
+for {set i 0} {$i < [expr $num_col*$num_row] } {set i [expr $i+1]} {
+
+	set timer [expr 0.0+$i]
+	set xdest [expr 500 -$i]
+	set ydest [expr 250 -$i]
+	$ns_ at $timer "$node_($i) setdest $xdest $ydest 15.0"
+
+
+}
 
 
 
+set udp_($i) [new Agent/TCP]
+	$ns_ attach-agent $node_($i) $udp_($i)
+
+	set cbr_($i) [new Application/Traffic/CBR]
+	$cbr_($i) attach-agent $udp_($i)
+	
+	$cbr_($i) set packetSize_ $cbr_size
+	$cbr_($i) set rate_ $cbr_rate
+	$cbr_($i) set interval_ $cbr_interval
+	
+	set ant_i [expr $i+1]
+	set null_($ant_i) [new Agent/Null]  
+	$ns_ attach-agent $node_($ant_i) $null_($ant_i)
+	
+	$ns_ connect $udp_($i) $null_($ant_i)
+	
+	if { $i<5} {
+		$udp_($i) set class_ 1
+	}
+	
+	if {$i>5 && $i<15} {
+		$udp_($i) set class_ 2
+	}
+	
+	if { $i>15 && $i<25} {
+		
+		$udp_($i) set class_ 3
+	}
+	
+	if { $i>25} {
+		$udp_($i) set class_ 4
+	}
+	
+	set timer [expr 0.0+$i]
+	set end_timer 150
+	
+	$ns_ at $timer "$cbr_($i) start"
+	$ns_ at $end_timer "$cbr_($i) stop"
 
 
 
+for {set i [expr ($num_parallel_flow/4)+1] } {$i<($num_parallel_flow/2)+2} {set i [expr $i+2]} {
+	
 
+	set tcp_($i) [new Agent/TCP]
+	$ns attach-agent $node_($i) $tcp_($i)
+
+	set ftp_($i) [new Application/FTP]
+	$ftp_($i) attach-agent $tcp_($i)
+	
+	set ant_i [expr $i+1]
+	set sink_($ant_i) [new Agent/TCPSink] 
+	$ns attach-agent $node_($ant_i) $sink_($ant_i)
+	
+	$ns connect $tcp_($i) $sink_($ant_i)
+	
+	
+	
+	if { $i<25} {
+		$tcp_($i) set fid_ 5
+	}
+	
+	if {$i>25 && $i<35} {
+		$tcp_($i) set fid_ 6
+	}
+	
+	if { $i>35 && $i<40} {
+		
+		$tcp_($i) set fid_ 7
+	}
+	
+	if { $i>40} {
+		$tcp_($i) set fid_ 8
+	}
+	
+	set timer [expr ($num_parallel_flow/4)+$i]
+	set end_timer 28.0
+	
+	$ns at $timer "$ftp_($i) start"
+	$ns at $end_timer "$ftp_($i) stop"
+
+}
 

@@ -8,7 +8,7 @@ BEGIN {
 	Throghput=0
 	delay=0
 	avgDelay=0
-	pktIndex=10000000
+	pktIndex=1000000000
 	i=0
 	pktId[pktIndex]
 	num_pkt=-1
@@ -40,7 +40,7 @@ BEGIN {
 	
 	if(event=="+"&&pktId[pId]==0)
 	{
-		pktId[pId]=time;
+		pktId[pId]=time
 		++num
 	}
 
@@ -58,13 +58,10 @@ END {
 	Avg_Delay=num/totTime
 	Pkt_del_ratio=num/totPktrecv
 	Pkt_drp_ratio=drop/num
-	#printf("total pkts recv: %g\n",totPktrecv);
-	#printf("total Bytes recv : %g MB\n",totByteRecv);
-	#printf("total pkts drop: %g\n",drop);
-	printf("%g\n",Throghput);
-	#printf("Avg Delay: %g s\n",Avg_Delay);
-	#printf("Packet delivery ratio: %g\n",Pkt_del_ratio)
-	#printf("Packet drop ratio: %g\n",Pkt_drp_ratio)
+
+	
+	printf("%g %g %g %g\n", Throghput, Avg_Delay, Pkt_del_ratio, Pkt_drp_ratio) ;
+
 	
 }
 

@@ -52,7 +52,7 @@ set ns [new Simulator]
 #nam file open and trace on
 
 set nf [open wired.nam w]
-set traceFile1 [open wired2.tr w]
+set traceFile1 [open wired.tr w]
 
 $ns namtrace-all $nf
 $ns trace-all $traceFile1
@@ -91,7 +91,12 @@ for {set i 1 } {$i<[expr $num_row*$num_col]} {set i [expr $i+1]} {
 
 set end_timer [expr $num_parallel_flow*2]
 
-for {set i 0 } {$i<[expr ($num_parallel_flow/4)]} {set i [expr $i+2]} {
+for {set i 0 } {$i<[expr int([expr $num_parallel_flow/4])]} {set i [expr $i+2]} {
+
+
+	#set max [expr [expr $i + 1] - $i]
+    #set value [expr int([expr rand()])]
+    #set value [expr [expr $value % $i] + $i]
 	
 	set udp_($i) [new Agent/UDP]
 	$ns attach-agent $node_($i) $udp_($i)
@@ -132,52 +137,12 @@ for {set i 0 } {$i<[expr ($num_parallel_flow/4)]} {set i [expr $i+2]} {
 	set end_timer [expr 0.0+$i+$i]
 	
 	$ns at $timer "$cbr_($i) start"
-	$ns at $end_timer "$cbr_($i) stop"
+	$ns at 200.0 "$cbr_($i) stop"
 
 }
 
 
-for {set i [expr ($num_parallel_flow/4)+1] } {$i<($num_parallel_flow/2)+2} {set i [expr $i+2]} {
-	
 
-	set tcp_($i) [new Agent/TCP]
-	$ns attach-agent $node_($i) $tcp_($i)
-
-	set ftp_($i) [new Application/FTP]
-	$ftp_($i) attach-agent $tcp_($i)
-	
-	set ant_i [expr $i+1]
-	set sink_($ant_i) [new Agent/TCPSink] 
-	$ns attach-agent $node_($ant_i) $sink_($ant_i)
-	
-	$ns connect $tcp_($i) $sink_($ant_i)
-	
-	
-	
-	if { $i<25} {
-		$tcp_($i) set fid_ 5
-	}
-	
-	if {$i>25 && $i<35} {
-		$tcp_($i) set fid_ 6
-	}
-	
-	if { $i>35 && $i<40} {
-		
-		$tcp_($i) set fid_ 7
-	}
-	
-	if { $i>40} {
-		$tcp_($i) set fid_ 8
-	}
-	
-	set timer [expr ($num_parallel_flow/4)+$i]
-	set end_timer [expr $timer+$i]
-	
-	$ns at $timer "$ftp_($i) start"
-	$ns at $end_timer "$ftp_($i) stop"
-
-}
 
 $ns color 1 Blue
 $ns color 2 Green
@@ -207,8 +172,8 @@ proc finish {} \
 }
 
 
-$ns at 28.0001 "finish"
+$ns at 200.0001 "finish"
 puts "Starting Simulation..."
-$ns at 28.0002 "puts \"NS EXITING...\" "
+$ns at 200.0002 "puts \"NS EXITING...\" "
 $ns run
 
