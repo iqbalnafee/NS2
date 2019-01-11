@@ -55,7 +55,7 @@ END {
 	#Compute Throuhput
 	totByteRecv=totByteRecv*(8/1000000)
 	Throghput=totByteRecv/totTime
-	Avg_Delay=num/totTime
+	Avg_Delay=totTime/num
 	Pkt_del_ratio=num/totPktrecv
 	Pkt_drp_ratio=drop/num
 

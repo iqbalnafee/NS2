@@ -9,12 +9,12 @@ set x_dim 100
 set y_dim 100
 
 
-set num_row 5;#number of row
-set num_col 5 ;#number of column
+set num_row [lindex $argv 0];#number of row
+set num_col [lindex $argv 1] ;#number of column
 
 set num_parallel_flow 20
 set num_cross_flow 20
-set num_random_flow 20
+set num_random_flow [lindex $argv 2]
 
 set tcp_src Agent/TCP ;
 set tcp_sink Agent/TCPSink
@@ -127,7 +127,7 @@ for {set i 0} {$i < [expr $num_random_flow]} {incr i} {
 
 #Random FLOW
 
-for {set i 0} {$i < [expr $num_random_flow-1] } {set i [expr $i+2]} {
+for {set i 0} {$i<[expr int([expr $num_random_flow/4])]} {set i [expr $i+2]} {
 	
 	set udp_($i) [new Agent/UDP]
 	$ns_ attach-agent $node_($i) $udp_($i)
@@ -175,8 +175,8 @@ for {set i 0} {$i < [expr $num_random_flow-1] } {set i [expr $i+2]} {
 for {set i 0} {$i < [expr $num_col*$num_row] } {set i [expr $i+1]} {
 
 	set timer [expr 0.0+$i]
-	set xdest [expr 80-$i ]
-	set ydest [expr 50-$i ]
+	set xdest [expr 100-$i ]
+	set ydest [expr 100-$i ]
 	$ns_ at $timer "$node_($i) setdest $xdest $ydest 15.0"
 
 
@@ -208,7 +208,8 @@ $ns_ at 50.01 "stop"
 proc stop {} {
     global ns_ tracefd
     close $tracefd
-    exec nam wireless.nam &
+    #exec nam wireless.nam &
+	exit 0
 }
 for {set i 0} {$i < [expr $num_row*$num_col]  } { incr i} {
 	$ns_ initial_node_pos $node_($i) 4

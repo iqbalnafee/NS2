@@ -76,7 +76,6 @@ BEGIN {
 #			printf("%15.0f\n", $6); #nBytes);
 			rReceivedTime[ idPacket ] = rTime ;
 			rDelay[idPacket] = rReceivedTime[ idPacket] - rSentTime[ idPacket ];
-#			rTotalDelay += rReceivedTime[ idPacket] - rSentTime[ idPacket ];
 			rTotalDelay += rDelay[idPacket]; 
 
 #			printf("%15.5f   %15.5f\n", rDelay[idPacket], rReceivedTime[ idPacket] - rSentTime[ idPacket ]);
@@ -102,7 +101,8 @@ BEGIN {
 
 END {
 	rTime = rEndTime - rStartTime ;
-	rThroughput = nReceivedBytes*8 / rTime;
+	rThroughput = nReceivedBytes*(8/1000000)
+	rThroughput=rThroughput/ rTime;
 	rPacketDeliveryRatio = nReceivedPackets / nSentPackets * 100 ;
 	rPacketDropRatio = nDropPackets / nSentPackets * 100;
 
@@ -128,8 +128,8 @@ END {
 
 
 
-	printf( "%g\n%g\n%g\n%g\n%g\n%g\n%g\n%g done\n", rThroughput, rAverageDelay, nSentPackets, nReceivedPackets, nDropPackets, rPacketDeliveryRatio, rPacketDropRatio,rTime) ;
-	printf("%g\n%g\n%g\n%g\n%g\n%g\n", total_energy_consumption, avg_energy_per_bit, avg_energy_per_byte, avg_energy_per_packet, total_retransmit, rEnergyEfficeincy);
+	printf( "%g %g %g %g %g\n", rThroughput, rAverageDelay, rPacketDeliveryRatio, rPacketDropRatio,total_energy_consumption) ;
+	#printf("%g\n%g\n%g\n%g\n%g\n%g\n", total_energy_consumption, avg_energy_per_bit, avg_energy_per_byte, avg_energy_per_packet, total_retransmit, rEnergyEfficeincy);
 
 
 }
